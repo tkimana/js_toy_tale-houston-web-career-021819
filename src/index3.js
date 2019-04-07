@@ -6,9 +6,9 @@ const container = document.querySelector('#toy-collection')
 
 let addToy = false
 
+// 1) ~~fetch~~
 
-// function fetchToys(){ 
-// Same as:
+// function fetchToys(){
 const fetchToys = function(){
   fetch('http://localhost:3001/toys')
     .then(function(response){
@@ -22,27 +22,43 @@ const fetchToys = function(){
 }
 fetchToys() 
 
+// 2) put them on the page
 const renderToyCard = function(toy){
-  container.append(
-    div({ class: 'card' },
-      h2(toy.name),
-      img({ src: toy.image, class: 'toy-avatar' }), 
-      p(`${toy.likes} likes`, { class: `likes-${toy.id}` }),
-      button('Like <3', {
-          class: 'like-btn',
-          click: function(){
-            likeToy(toy)
-          }
-      })
-    )
+  const toyCard = document.createElement('div')
+  toyCard.className = 'card'
+  
+  const toyName = document.createElement('h2')
+  toyName.append( toy.name )
+
+  const toyImg = document.createElement('img')
+  toyImg.src = toy.image
+  toyImg.className = "toy-avatar"
+
+  const toyLikes = document.createElement('p')
+  toyLikes.innerText = `${toy.likes} likes`
+
+  const likeButton = document.createElement('button')
+  likeButton.append('Like <3')
+  likeButton.className = "like-btn"
+
+  toyCard.append(
+    toyName,
+    toyImg,
+    toyLikes,
+    likeButton
   )
+
+  container.append( toyCard )
+
+  likeButton.addEventListener('click', function(){
+    likeToy(toy)
+  })
 }
 
 // Update
 
 const likeToy = function(toy){
   toy.likes++
-  const toyLikes = document.querySelector(`.likes-${toy.id}`)
   toyLikes.innerText = `${toy.likes} likes`
   fetch(`http://localhost:3001/toys/${toy.id}`, {
     method: 'PATCH',
@@ -88,3 +104,8 @@ addBtn.addEventListener('click', () => {
     toyForm.style.display = 'none'
   }
 })
+
+
+
+
+// OR HERE!
